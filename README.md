@@ -31,7 +31,8 @@ pip install -r requirements.txt
 On the Raspberry Pi, `display.py` additionally requires the
 [rpi-rgb-led-matrix](https://github.com/hzeller/rpi-rgb-led-matrix) Python
 bindings, installed separately per that project's instructions (it's a C++
-library with Python bindings, not a pip package).
+library with Python bindings, not a pip package). Clone that repo on the Pi
+and update `config.FONT_DIR` to point at its `fonts/` directory.
 
 ## Usage
 
@@ -41,6 +42,12 @@ Test the feed connection and stop ID without any hardware attached:
 python3 fetch_trains.py
 ```
 
+Preview the LED layout on the Pi without the fetch loop:
+
+```bash
+sudo python3 display.py
+```
+
 Run the full display loop (on the Pi, with the bonnet and panels attached):
 
 ```bash
@@ -48,6 +55,13 @@ sudo python3 main.py
 ```
 
 (`sudo` is required because the LED matrix library needs direct hardware access.)
+
+## Gotchas
+
+- The feed URL's `nyct/gtfs-nqrw` segment must be percent-encoded as
+  `nyct%2Fgtfs-nqrw` — it's a single API Gateway path parameter, not two path
+  segments. An unencoded slash returns a misleading 403
+  `MissingAuthenticationTokenException` instead of a 404.
 
 ## Finding a stop ID
 
