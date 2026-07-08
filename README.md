@@ -6,6 +6,8 @@ A DIY LED matrix display showing live downtown Q train arrivals at 96th St
 ## Hardware
 
 - Raspberry Pi Zero 2 W
+- microSD card (8GB+) for the Pi's OS
+- microSD-to-SD (or microSD-to-USB) adapter, for flashing the card from a laptop without a built-in microSD slot
 - 4x Adafruit 64x32 RGB LED Matrix panels, 2.5mm pitch ([product 5036](https://www.adafruit.com/product/5036)), chained into a single 256x32 pixel display
 - Adafruit RGB Matrix Bonnet ([product 3211](https://www.adafruit.com/product/3211))
 - 2x 5V 4A power supplies (matrices draw significant current at full brightness)
