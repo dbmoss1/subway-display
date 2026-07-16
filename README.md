@@ -11,6 +11,7 @@ A DIY LED matrix display showing live downtown Q train arrivals at 96th St
 - 4x Adafruit 64x32 RGB LED Matrix panels, 2.5mm pitch ([product 5036](https://www.adafruit.com/product/5036)), chained into a single 256x32 pixel display
 - Adafruit RGB Matrix Bonnet ([product 3211](https://www.adafruit.com/product/3211))
 - 2x 5V 4A power supplies (matrices draw significant current at full brightness)
+- 2x 2.1mm DC barrel power splitter cables (1-to-2), so each supply can power 2 panels — each panel has its own separate power plug, not shared over the data chain
 
 ## Software
 
