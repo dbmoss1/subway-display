@@ -11,7 +11,9 @@ A DIY LED matrix display showing live downtown Q train arrivals at 96th St
 - 4x Adafruit 64x32 RGB LED Matrix panels, 2.5mm pitch ([product 5036](https://www.adafruit.com/product/5036)), chained into a single 256x32 pixel display
 - Adafruit RGB Matrix Bonnet ([product 3211](https://www.adafruit.com/product/3211))
 - 2x 5V 4A power supplies (matrices draw significant current at full brightness)
-- 2x 2.1mm DC barrel power splitter cables (1-to-2), so each supply can power 2 panels — each panel has its own separate power plug, not shared over the data chain
+- 2x Female DC Power Adapters, 2.1mm jack to screw terminal block ([product 368](https://www.adafruit.com/product/368)) — each panel's power cable ends in bare wire, and each screw terminal can take 2 panels' wires, letting one supply feed 2 panels
+- GPIO header for the Pi (its 40 GPIO holes ship unpopulated) — either a solderless "hammer header" + jig kit ([product 3413](https://www.adafruit.com/product/3413)), or a standard 2x20 male header + your own soldering iron
+- Something to physically mount/align the 4 panels in a single flush row (frame, backing board, or brackets — not yet decided)
 
 ## Software
 
