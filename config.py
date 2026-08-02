@@ -13,7 +13,7 @@ STOP_ID = "Q05S"
 ROUTE_ID = "Q"
 
 # Label shown on the display for this direction
-DESTINATION_LABEL = "CONEY ISLAND"
+DESTINATION_LABEL = "DOWNTOWN & BROOKLYN"
 
 # How often to refresh arrival data, in seconds
 REFRESH_INTERVAL_SECONDS = 30
@@ -26,11 +26,20 @@ REQUEST_TIMEOUT_SECONDS = 10
 
 # --- LED matrix hardware (rpi-rgb-led-matrix RGBMatrixOptions) ---
 
-# 4x Adafruit 64x32 panels (product 5036) chained into a single 256x32 display
+# 6x Adafruit 64x32 panels (product 5036), wired as a single serpentine
+# (U-shaped) chain off the Bonnet's one output -- 3 panels left-to-right,
+# ribbon down, 3 panels right-to-left back -- folded into a 192x64 display
+# by the "U-mapper" pixel mapper (see PIXEL_MAPPER below). The Bonnet only
+# has one chain output, so this is NOT 2 parallel chains.
 PANEL_ROWS = 32
 PANEL_COLS = 64
-CHAIN_LENGTH = 4
+CHAIN_LENGTH = 6
 PARALLEL_CHAINS = 1
+
+# Folds the single 6-panel chain into 2 physical rows of 3 via a serpentine
+# wiring order. Physical wiring order matters: row 1 left-to-right, ribbon
+# down on the right side, row 2 right-to-left. See README Hardware section.
+PIXEL_MAPPER = "U-mapper"
 
 # Adafruit RGB Matrix Bonnet (product 3211)
 HARDWARE_MAPPING = "adafruit-hat"

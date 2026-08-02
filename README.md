@@ -8,12 +8,12 @@ A DIY LED matrix display showing live downtown Q train arrivals at 96th St
 - Raspberry Pi Zero 2 W
 - microSD card (8GB+) for the Pi's OS
 - microSD-to-SD (or microSD-to-USB) adapter, for flashing the card from a laptop without a built-in microSD slot
-- 4x Adafruit 64x32 RGB LED Matrix panels, 2.5mm pitch ([product 5036](https://www.adafruit.com/product/5036)), chained into a single 256x32 pixel display
-- Adafruit RGB Matrix Bonnet ([product 3211](https://www.adafruit.com/product/3211))
-- 2x 5V 4A power supplies (matrices draw significant current at full brightness)
-- 2x Female DC Power Adapters, 2.1mm jack to screw terminal block ([product 368](https://www.adafruit.com/product/368)) — each panel's power cable ends in bare wire, and each screw terminal can take 2 panels' wires, letting one supply feed 2 panels
-- GPIO header for the Pi (its 40 GPIO holes ship unpopulated) — either a solderless "hammer header" + jig kit ([product 3413](https://www.adafruit.com/product/3413)), or a standard 2x20 male header + your own soldering iron
-- Something to physically mount/align the 4 panels in a single flush row (frame, backing board, or brackets — not yet decided)
+- 6x Adafruit 64x32 RGB LED Matrix panels, 2.5mm pitch ([product 5036](https://www.adafruit.com/product/5036)), wired as a single serpentine ("U-shaped") chain off the Bonnet's one output — panels 1-2-3 left-to-right, ribbon cable down to panel 4 (still on the right side), then panels 4-5-6 right-to-left — folded into a 192x64 display by the `rpi-rgb-led-matrix` "U-mapper" pixel mapper. **Wiring order matters**: connecting row 2 left-to-right instead of right-to-left will scramble the bottom row.
+- Adafruit RGB Matrix Bonnet ([product 3211](https://www.adafruit.com/product/3211)) — note this board has a single chain output only (no parallel-chain support), which is why the 6 panels must be one folded chain rather than 2 independent chains of 3
+- Power supplies (matrices draw significant current at full brightness) — sizing/count not yet finalized for 6 panels
+- Female DC Power Adapters, 2.1mm jack to screw terminal block ([product 368](https://www.adafruit.com/product/368)) — each panel's power cable ends in bare wire; power plan for 6 panels not yet finalized
+- GPIO header for the Pi (its 40 GPIO holes ship unpopulated) — either a solderless "hammer header" + jig kit ([product 3413](https://www.adafruit.com/product/3413)), or a standard 2x20 male header + your own soldering iron — **done**, header mounted and bonnet attached
+- Something to physically mount/align the 6 panels in a 2-row x 3-column grid (frame, backing board, or brackets — not yet decided)
 
 ## Software
 

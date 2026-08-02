@@ -1,4 +1,4 @@
-"""Render Q train arrivals across the chained 256x32 LED matrix panels.
+"""Render Q train arrivals across the folded 192x64 LED matrix panels.
 
 Requires the rpi-rgb-led-matrix Python bindings (https://github.com/hzeller/rpi-rgb-led-matrix),
 built and installed separately on the Raspberry Pi -- this only runs there,
@@ -9,12 +9,13 @@ from rgbmatrix import RGBMatrix, RGBMatrixOptions, graphics
 
 import config
 
-DISPLAY_WIDTH = config.PANEL_COLS * config.CHAIN_LENGTH  # 256
-DISPLAY_HEIGHT = config.PANEL_ROWS  # 32
-ROW_HEIGHT = DISPLAY_HEIGHT // 2  # 16px per arrival row, two rows stacked
+# U-mapper folds the 6-panel chain into 2 physical rows of 3, so the logical
+# canvas is 3 panels wide by 2 panels tall, not 6 panels wide by 1 tall.
+DISPLAY_WIDTH = config.PANEL_COLS * (config.CHAIN_LENGTH // 2)  # 192
+DISPLAY_HEIGHT = config.PANEL_ROWS * 2  # 64
+ROW_HEIGHT = DISPLAY_HEIGHT // 2  # 32px per arrival row -- one physical panel row each
 
 YELLOW = graphics.Color(255, 199, 0)
-BLACK = graphics.Color(0, 0, 0)
 WHITE = graphics.Color(255, 255, 255)
 
 
@@ -36,6 +37,7 @@ class Display:
         options.cols = config.PANEL_COLS
         options.chain_length = config.CHAIN_LENGTH
         options.parallel = config.PARALLEL_CHAINS
+        options.pixel_mapper_config = config.PIXEL_MAPPER
         options.hardware_mapping = config.HARDWARE_MAPPING
         options.gpio_slowdown = config.GPIO_SLOWDOWN
         options.brightness = config.BRIGHTNESS
@@ -56,7 +58,9 @@ class Display:
     def _draw_row(self, row_index, minutes):
         y_top = row_index * ROW_HEIGHT
         center_y = y_top + ROW_HEIGHT // 2
-        text_baseline = y_top + ROW_HEIGHT - 3
+        # Baseline offset to visually center the label font on center_y;
+        # approximate without exact BDF metrics, fine-tune during the smoke test.
+        text_baseline = center_y + 4
 
         self._draw_bullet(config.BULLET_CENTER_X, center_y)
 
@@ -91,7 +95,7 @@ class Display:
         q_width = self.bullet_font.CharacterWidth(ord("Q"))
         q_x = center_x - q_width // 2
         q_y = center_y + 2  # nudge down to account for BDF baseline offset
-        graphics.DrawText(self.canvas, self.bullet_font, q_x, q_y, BLACK, "Q")
+        graphics.DrawText(self.canvas, self.bullet_font, q_x, q_y, WHITE, "Q")
 
     @staticmethod
     def _text_width(font, text):
