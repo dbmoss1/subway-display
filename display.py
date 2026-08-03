@@ -21,14 +21,17 @@ WHITE = graphics.Color(255, 255, 255)
 
 class Display:
     def __init__(self):
-        self.matrix = self._build_matrix()
-        self.canvas = self.matrix.CreateFrameCanvas()
-
+        # Fonts must load before the matrix is built: RGBMatrix() drops root
+        # privileges after setting up GPIO, and the lower-privilege user it
+        # drops to can't necessarily read files under the home directory.
         self.label_font = graphics.Font()
         self.label_font.LoadFont(config.LABEL_FONT_FILE)
 
         self.bullet_font = graphics.Font()
         self.bullet_font.LoadFont(config.BULLET_FONT_FILE)
+
+        self.matrix = self._build_matrix()
+        self.canvas = self.matrix.CreateFrameCanvas()
 
     @staticmethod
     def _build_matrix():
