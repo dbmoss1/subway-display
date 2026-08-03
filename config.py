@@ -43,12 +43,10 @@ PARALLEL_CHAINS = 1
 # the top-left corner U-mapper assumes. See README Hardware section.
 PIXEL_MAPPER = "U-mapper;Mirror:H"
 
-# Adafruit RGB Matrix Bonnet (product 3211). Using the PWM variant --
-# reseating every ribbon connector didn't fix a consistent yellow-shows-as-
-# purple color issue, which pointed at a pin-mapping mismatch rather than a
-# physical connection problem. If this doesn't fix it either, revert to
-# plain "adafruit-hat".
-HARDWARE_MAPPING = "adafruit-hat-pwm"
+# Adafruit RGB Matrix Bonnet (product 3211). "adafruit-hat-pwm" needs a
+# soldered GPIO4-GPIO18 jumper mod that hasn't been done on this board --
+# using it produced no output at all. Stick with plain "adafruit-hat".
+HARDWARE_MAPPING = "adafruit-hat"
 
 # Raise if you see flicker/ghosting on the Pi Zero 2 W; 2-4 is typical
 GPIO_SLOWDOWN = 2
