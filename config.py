@@ -38,10 +38,11 @@ PANEL_COLS = 64
 CHAIN_LENGTH = 6
 PARALLEL_CHAINS = 1
 
-# Folds the single 6-panel chain into 2 physical rows of 3. "Mirror:H" is
-# needed because the chain physically starts at the top-right corner, not
-# the top-left corner U-mapper assumes. See README Hardware section.
-PIXEL_MAPPER = "U-mapper;Mirror:H"
+# Folds the single 6-panel chain into 2 physical rows of 3. Dropped Mirror:H
+# -- with power/color issues fixed, text was showing backwards with it on,
+# so the "starts top-right, needs a mirror" theory was wrong. See README
+# Hardware section for the confirmed physical wiring order.
+PIXEL_MAPPER = "U-mapper"
 
 # Adafruit RGB Matrix Bonnet (product 3211). "adafruit-hat-pwm" needs a
 # soldered GPIO4-GPIO18 jumper mod that hasn't been done on this board --
