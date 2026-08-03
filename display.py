@@ -42,6 +42,7 @@ class Display:
         options.parallel = config.PARALLEL_CHAINS
         options.pixel_mapper_config = config.PIXEL_MAPPER
         options.hardware_mapping = config.HARDWARE_MAPPING
+        options.led_rgb_sequence = config.LED_RGB_SEQUENCE
         options.gpio_slowdown = config.GPIO_SLOWDOWN
         options.brightness = config.BRIGHTNESS
         return RGBMatrix(options=options)

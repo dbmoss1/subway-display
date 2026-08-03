@@ -48,6 +48,12 @@ PIXEL_MAPPER = "U-mapper;Mirror:H"
 # using it produced no output at all. Stick with plain "adafruit-hat".
 HARDWARE_MAPPING = "adafruit-hat"
 
+# These panels show yellow as purple with the default "RGB" order -- a known
+# manufacturing variance where green/blue data lines are swapped internally.
+# "RBG" compensates in software; reseating cables didn't fix it because it
+# isn't a connection problem.
+LED_RGB_SEQUENCE = "RBG"
+
 # Raise if you see flicker/ghosting on the Pi Zero 2 W; 2-4 is typical
 GPIO_SLOWDOWN = 2
 
