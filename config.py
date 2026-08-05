@@ -74,11 +74,11 @@ GPIO_SLOWDOWN = 2
 # Percent brightness; keep well under 100 given the 2x 5A supplies
 BRIGHTNESS = 70
 
-# BDF fonts bundled with https://github.com/hzeller/rpi-rgb-led-matrix
-# Adjust this path to wherever that repo is cloned on the Pi.
+# BDF font bundled with https://github.com/hzeller/rpi-rgb-led-matrix
+# Adjust this path to wherever that repo is cloned on the Pi. Used for the
+# stop/time text and the bullet's Q, so they all match in size and font.
 FONT_DIR = "/home/pi/rpi-rgb-led-matrix/fonts"
 LABEL_FONT_FILE = f"{FONT_DIR}/7x13B.bdf"
-BULLET_FONT_FILE = f"{FONT_DIR}/5x7.bdf"
 
 # Layout, in pixels, of each 16px-tall arrival row
 BULLET_DIAMETER = 15

@@ -17,18 +17,16 @@ ROW_HEIGHT = DISPLAY_HEIGHT // 2  # 32px per arrival row -- one physical panel r
 
 YELLOW = graphics.Color(255, 199, 0)
 WHITE = graphics.Color(255, 255, 255)
+BLACK = graphics.Color(0, 0, 0)
 
 
 class Display:
     def __init__(self):
-        # Fonts must load before the matrix is built: RGBMatrix() drops root
+        # Font must load before the matrix is built: RGBMatrix() drops root
         # privileges after setting up GPIO, and the lower-privilege user it
         # drops to can't necessarily read files under the home directory.
         self.label_font = graphics.Font()
         self.label_font.LoadFont(config.LABEL_FONT_FILE)
-
-        self.bullet_font = graphics.Font()
-        self.bullet_font.LoadFont(config.BULLET_FONT_FILE)
 
         self.matrix = self._build_matrix()
         self.canvas = self.matrix.CreateFrameCanvas()
@@ -139,10 +137,12 @@ class Display:
                 if dx * dx + dy * dy <= r_squared:
                     self.canvas.SetPixel(x, y, YELLOW.red, YELLOW.green, YELLOW.blue)
 
-        q_width = self.bullet_font.CharacterWidth(ord("Q"))
+        # Same font/size as the stop and time text, in black against the
+        # yellow bullet, per the real MTA bullet styling.
+        q_width = self.label_font.CharacterWidth(ord("Q"))
         q_x = center_x - q_width // 2
-        q_y = center_y + 2  # nudge down to account for BDF baseline offset
-        graphics.DrawText(self.canvas, self.bullet_font, q_x, q_y, WHITE, "Q")
+        q_y = center_y + 4  # same baseline offset as text_baseline in _draw_row
+        graphics.DrawText(self.canvas, self.label_font, q_x, q_y, BLACK, "Q")
 
     @staticmethod
     def _format_minutes(minutes):
