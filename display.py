@@ -85,28 +85,42 @@ class Display:
         # e.g. it left visible gaps around "&" in DESTINATION_LABEL and
         # between the number and "MIN" in the arrival label, enough to
         # crowd the display's fixed width. Scale it down instead of using
-        # the font's native advance. Tune SPACE_WIDTH_SCALE in config.py
-        # after checking it live on the physical display.
-        return round(font.CharacterWidth(ord(" ")) * config.SPACE_WIDTH_SCALE)
+        # the font's native advance, then nudge by a flat pixel amount for
+        # finer tuning. Adjust SPACE_WIDTH_SCALE / SPACE_WIDTH_ADJUST_PX in
+        # config.py after checking it live on the physical display.
+        scaled = font.CharacterWidth(ord(" ")) * config.SPACE_WIDTH_SCALE
+        return round(scaled) + config.SPACE_WIDTH_ADJUST_PX
+
+    def _kerning_adjust(self, this_char, next_char):
+        # Flat pixel nudge (negative = tighter) between two specific adjacent
+        # characters that still look too loose even at their normal BDF
+        # widths -- e.g. "LY" in "BROOKLYN". See config.KERNING_ADJUSTMENTS_PX.
+        return config.KERNING_ADJUSTMENTS_PX.get((this_char, next_char), 0)
 
     def _tracked_text_width(self, font, text):
-        """Like summing CharacterWidth, but with a narrowed space (see _space_width)."""
+        """Like summing CharacterWidth, but with a narrowed space (see
+        _space_width) and any per-pair kerning nudges (see _kerning_adjust)."""
         space_width = self._space_width(font)
-        return sum(
-            space_width if ch == " " else font.CharacterWidth(ord(ch))
-            for ch in text
-        )
+        total = 0
+        for i, ch in enumerate(text):
+            total += space_width if ch == " " else font.CharacterWidth(ord(ch))
+            if i + 1 < len(text):
+                total += self._kerning_adjust(ch, text[i + 1])
+        return total
 
     def _draw_tracked_text(self, font, x, y, color, text):
         """DrawText, but with a narrowed space (see _space_width) instead of
-        the font's native (too-wide, at this scale) space advance."""
+        the font's native (too-wide, at this scale) space advance, plus any
+        per-pair kerning nudges (see _kerning_adjust)."""
         space_width = self._space_width(font)
         cursor_x = x
-        for ch in text:
+        for i, ch in enumerate(text):
             if ch == " ":
                 cursor_x += space_width
-                continue
-            cursor_x += graphics.DrawText(self.canvas, font, cursor_x, y, color, ch)
+            else:
+                cursor_x += graphics.DrawText(self.canvas, font, cursor_x, y, color, ch)
+            if i + 1 < len(text):
+                cursor_x += self._kerning_adjust(ch, text[i + 1])
         return cursor_x
 
     def _draw_bullet(self, center_x, center_y):

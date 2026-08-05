@@ -93,3 +93,16 @@ RIGHT_MARGIN = 4
 # the font's native width. 1.0 = font default (the old too-wide look);
 # lower = tighter. Nudge this after checking it live on the physical display.
 SPACE_WIDTH_SCALE = 0.5
+
+# Extra flat pixel nudge applied on top of SPACE_WIDTH_SCALE above, for
+# finer tuning than the scale factor alone can give. Negative = tighter.
+SPACE_WIDTH_ADJUST_PX = -1  # trimmed 1px further on 2026-08-05
+
+# Manual kerning nudges (pixels; negative = tighter) for specific adjacent
+# character pairs that still look too loose at their normal BDF widths.
+# Keyed by (this_char, next_char), checked against consecutive characters
+# in any label text drawn via Display._draw_tracked_text. Uppercase because
+# DESTINATION_LABEL and the formatted arrival text are both uppercase.
+KERNING_ADJUSTMENTS_PX = {
+    ("L", "Y"): -1,  # "BROOKLYN" -- tightened 2026-08-05
+}
