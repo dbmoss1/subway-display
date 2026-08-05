@@ -88,7 +88,7 @@ RIGHT_MARGIN = 4
 
 # Fine-tune nudge (pixels) for the Q's position within the bullet circle,
 # on top of its centered/baseline placement in Display._draw_bullet.
-BULLET_Q_X_OFFSET = 1  # nudged right 2026-08-05
+BULLET_Q_X_OFFSET = 0  # nudged right then back left 1px 2026-08-05
 BULLET_Q_Y_OFFSET = 1  # nudged down 2026-08-05
 
 # The label font's own space glyph is wider than looks right at this scale --
