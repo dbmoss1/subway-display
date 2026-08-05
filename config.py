@@ -26,19 +26,20 @@ REQUEST_TIMEOUT_SECONDS = 10
 
 # --- LED matrix hardware (rpi-rgb-led-matrix RGBMatrixOptions) ---
 
-# 6x Adafruit 64x32 panels (product 5036), wired as a single serpentine
-# (U-shaped) chain off the Bonnet's one output, folded into a 192x64 display
-# by the "U-mapper" pixel mapper. The Bonnet only has one chain output, so
-# this is NOT 2 parallel chains. Confirmed physical order: bonnet ->
-# bottom-right -> bottom-middle -> bottom-left -> top-left -> top-middle ->
-# top-right.
+# TEMPORARY DIAGNOSTIC CHANGE, 2026-08-04: narrowing down where the chain
+# breaks. Both halves (bottom 3, top 3) work perfectly standalone; the full
+# 6-panel chain fails at the same spot regardless of cable/panel/timing/
+# power. Testing 4 panels flat (bonnet -> screen6 -> 5 -> 4 -> 1, screens 2
+# and 3 physically disconnected) to see if it's already broken at 4, or
+# only breaks at 5/6. REVERT this and DISPLAY_WIDTH/HEIGHT in display.py
+# back to the 6-panel/U-mapper setup afterward -- see git log.
 PANEL_ROWS = 32
 PANEL_COLS = 64
-CHAIN_LENGTH = 6
+CHAIN_LENGTH = 4
 PARALLEL_CHAINS = 1
 
-# Folds the single 6-panel chain into 2 physical rows of 3.
-PIXEL_MAPPER = "U-mapper"
+# Flat 4-panel chain for this test, no fold.
+PIXEL_MAPPER = ""
 
 # Adafruit RGB Matrix Bonnet (product 3211). "adafruit-hat-pwm" needs a
 # soldered GPIO4-GPIO18 jumper mod that hasn't been done on this board --
@@ -51,22 +52,13 @@ HARDWARE_MAPPING = "adafruit-hat"
 # isn't a connection problem.
 LED_RGB_SEQUENCE = "RBG"
 
-# Raised from 2: the full 6-panel chain showed clean data near the bonnet
-# end degrading to corrupted/blank further down the chain, while each half
-# worked perfectly as a standalone 3-panel chain regardless of which cables
-# were used. Raising this from 2 to 4 made no visible difference at all,
-# which is a bit unusual for a pure timing-margin fix -- pushing further to
-# 8 as one more cheap test before suspecting a GPIO drive-strength limit on
-# the Bonnet itself for a chain this long.
-GPIO_SLOWDOWN = 8
+# 2/4/8 all made zero visible difference on the 6-panel chain problem, so
+# this isn't the fix -- back to the original default.
+GPIO_SLOWDOWN = 2
 
-# Temporarily dropped from 70 to test whether the full 6-panel chain is
-# hitting a combined current limit: GPIO_SLOWDOWN 2/4/8 made zero visible
-# difference, which is unusual for a real timing fix but consistent with a
-# power/voltage problem that only shows up when all 6 panels draw current
-# at once (the isolated 3-panel tests never stressed the combined load).
-# Revert to 70 once this test is done.
-BRIGHTNESS = 30
+# Back to 70 -- dropping to 30 also made zero difference to the 6-panel
+# chain problem, ruling out combined current draw too.
+BRIGHTNESS = 70
 
 # BDF fonts bundled with https://github.com/hzeller/rpi-rgb-led-matrix
 # Adjust this path to wherever that repo is cloned on the Pi.
