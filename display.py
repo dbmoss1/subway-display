@@ -9,11 +9,12 @@ from rgbmatrix import RGBMatrix, RGBMatrixOptions, graphics
 
 import config
 
-# U-mapper folds the 6-panel chain into 2 physical rows of 3, so the logical
-# canvas is 3 panels wide by 2 panels tall, not 6 panels wide by 1 tall.
-DISPLAY_WIDTH = config.PANEL_COLS * (config.CHAIN_LENGTH // 2)  # 192
-DISPLAY_HEIGHT = config.PANEL_ROWS * 2  # 64
-ROW_HEIGHT = DISPLAY_HEIGHT // 2  # 32px per arrival row -- one physical panel row each
+# TEMPORARY DIAGNOSTIC CHANGE, 2026-08-04 -- see matching note in config.py.
+# Flat 3-panel chain, no U-mapper fold: 192 wide, 32 tall, one row only.
+# REVERT to the folded 192x64/two-row math afterward (see git log).
+DISPLAY_WIDTH = config.PANEL_COLS * config.CHAIN_LENGTH  # 192
+DISPLAY_HEIGHT = config.PANEL_ROWS  # 32
+ROW_HEIGHT = DISPLAY_HEIGHT // 2  # 16px per arrival row, two rows stacked in the one panel row
 
 YELLOW = graphics.Color(255, 199, 0)
 WHITE = graphics.Color(255, 255, 255)

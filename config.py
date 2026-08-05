@@ -26,27 +26,22 @@ REQUEST_TIMEOUT_SECONDS = 10
 
 # --- LED matrix hardware (rpi-rgb-led-matrix RGBMatrixOptions) ---
 
-# 6x Adafruit 64x32 panels (product 5036), wired as a single serpentine
-# (U-shaped) chain off the Bonnet's one output, folded into a 192x64 display
-# by the "U-mapper" pixel mapper (see PIXEL_MAPPER below). The Bonnet only
-# has one chain output, so this is NOT 2 parallel chains. Physical order:
-# bonnet -> top-right -> top-middle -> top-left -> bottom-left ->
-# bottom-middle -> bottom-right. That starts from the opposite corner U-mapper
-# assumes (top-left), so the image needs a horizontal mirror to land correctly.
+# TEMPORARY DIAGNOSTIC CHANGE, 2026-08-04: isolating a hardware fault.
+# Screens 1-3 (physically the top row, chain positions 4-6) are completely
+# blank and Screen 4 (position 3) shows corrupted noise, regardless of any
+# pixel-mapper software setting -- pointing at a bad connection somewhere
+# around position 3/4, not code. Testing here with screens 1-3 physically
+# unplugged and just a flat 3-panel chain (no fold) to see if 4/5/6 are
+# clean on their own. REVERT both this and DISPLAY_WIDTH/HEIGHT in
+# display.py back to the 6-panel/U-mapper setup afterward -- see git log
+# for the prior values.
 PANEL_ROWS = 32
 PANEL_COLS = 64
-CHAIN_LENGTH = 6
+CHAIN_LENGTH = 3
 PARALLEL_CHAINS = 1
 
-# Folds the single 6-panel chain into 2 physical rows of 3. Confirmed actual
-# chain order: bonnet -> bottom-right -> bottom-middle -> bottom-left ->
-# top-left -> top-middle -> top-right. Plain "U-mapper" (no Mirror/Rotate)
-# put the Q bullet on the correct (left) side of the working row; adding
-# Rotate:180 moved it to the wrong side without fixing the blank top row,
-# so that was a net loss -- reverted. The blank top row looks like a
-# separate hardware/connector issue (see README), not a pixel-mapper one:
-# no remapping should leave an entire row receiving zero data.
-PIXEL_MAPPER = "U-mapper"
+# No fold needed for a flat 3-panel chain.
+PIXEL_MAPPER = ""
 
 # Adafruit RGB Matrix Bonnet (product 3211). "adafruit-hat-pwm" needs a
 # soldered GPIO4-GPIO18 jumper mod that hasn't been done on this board --
