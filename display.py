@@ -140,8 +140,8 @@ class Display:
         # Same font/size as the stop and time text, in black against the
         # yellow bullet, per the real MTA bullet styling.
         q_width = self.label_font.CharacterWidth(ord("Q"))
-        q_x = center_x - q_width // 2
-        q_y = center_y + 4  # same baseline offset as text_baseline in _draw_row
+        q_x = center_x - q_width // 2 + config.BULLET_Q_X_OFFSET
+        q_y = center_y + 4 + config.BULLET_Q_Y_OFFSET  # +4: same baseline as text_baseline in _draw_row
         graphics.DrawText(self.canvas, self.label_font, q_x, q_y, BLACK, "Q")
 
     @staticmethod
