@@ -26,20 +26,36 @@ REQUEST_TIMEOUT_SECONDS = 10
 
 # --- LED matrix hardware (rpi-rgb-led-matrix RGBMatrixOptions) ---
 
-# TEMPORARY DIAGNOSTIC CHANGE, 2026-08-04: narrowing down where the chain
-# breaks. Both halves (bottom 3, top 3) work perfectly standalone; the full
-# 6-panel chain fails at the same spot regardless of cable/panel/timing/
-# power. Testing 4 panels flat (bonnet -> screen6 -> 5 -> 4 -> 1, screens 2
-# and 3 physically disconnected) to see if it's already broken at 4, or
-# only breaks at 5/6. REVERT this and DISPLAY_WIDTH/HEIGHT in display.py
-# back to the 6-panel/U-mapper setup afterward -- see git log.
+# 6x Adafruit 64x32 panels (product 5036), wired as a single serpentine
+# (U-shaped) chain off the Bonnet's one output, folded into a 192x64 display
+# by the "U-mapper" pixel mapper (see PIXEL_MAPPER below). The Bonnet only
+# has one chain output, so this is NOT 2 parallel chains. Confirmed physical
+# order: bonnet -> bottom-right -> bottom-middle -> bottom-left -> top-left
+# -> top-middle -> top-right.
 PANEL_ROWS = 32
 PANEL_COLS = 64
-CHAIN_LENGTH = 4
+CHAIN_LENGTH = 6
 PARALLEL_CHAINS = 1
 
-# Flat 4-panel chain for this test, no fold.
-PIXEL_MAPPER = ""
+# Folds the single 6-panel chain into 2 physical rows of 3. Plain "U-mapper"
+# (no Mirror/Rotate) put the Q bullet on the correct (left) side of a
+# working row; adding Rotate:180 moved it to the wrong side without fixing
+# anything else, so that was a net loss -- reverted.
+#
+# UNRESOLVED as of 2026-08-04: the bottom-right/bottom-middle panels
+# (chain positions 1-2) display correctly; the next panel (position 3)
+# shows corrupted noise; everything after that (positions 4-6) is
+# completely dark. This exact failure point held steady across a lot of
+# elimination testing -- swapping the cable at that junction, swapping
+# which physical panel sits at position 3, GPIO_SLOWDOWN at 2/4/8, and
+# BRIGHTNESS at 70 vs 30 all made zero difference. It also happens
+# identically whether the chain is 4 panels or the full 6, which rules out
+# "chain too long" signal degradation -- it's a fault localized to that one
+# junction (between chain position 3 and 4), not a length problem. Not yet
+# tested: swapping which panel sits at position 4 (the one right after the
+# break) -- see [[project-subway-display]] memory for the fuller diagnostic
+# history before re-testing things already ruled out above.
+PIXEL_MAPPER = "U-mapper"
 
 # Adafruit RGB Matrix Bonnet (product 3211). "adafruit-hat-pwm" needs a
 # soldered GPIO4-GPIO18 jumper mod that hasn't been done on this board --
@@ -52,12 +68,10 @@ HARDWARE_MAPPING = "adafruit-hat"
 # isn't a connection problem.
 LED_RGB_SEQUENCE = "RBG"
 
-# 2/4/8 all made zero visible difference on the 6-panel chain problem, so
-# this isn't the fix -- back to the original default.
+# Raise if you see flicker/ghosting on the Pi Zero 2 W; 2-4 is typical
 GPIO_SLOWDOWN = 2
 
-# Back to 70 -- dropping to 30 also made zero difference to the 6-panel
-# chain problem, ruling out combined current draw too.
+# Percent brightness; keep well under 100 given the 2x 5A supplies
 BRIGHTNESS = 70
 
 # BDF fonts bundled with https://github.com/hzeller/rpi-rgb-led-matrix
