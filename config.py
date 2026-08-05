@@ -54,9 +54,11 @@ LED_RGB_SEQUENCE = "RBG"
 # Raised from 2: the full 6-panel chain showed clean data near the bonnet
 # end degrading to corrupted/blank further down the chain, while each half
 # worked perfectly as a standalone 3-panel chain regardless of which cables
-# were used -- the signature of insufficient timing margin for a longer
-# chain on the Pi Zero 2 W, not a bad cable or panel.
-GPIO_SLOWDOWN = 4
+# were used. Raising this from 2 to 4 made no visible difference at all,
+# which is a bit unusual for a pure timing-margin fix -- pushing further to
+# 8 as one more cheap test before suspecting a GPIO drive-strength limit on
+# the Bonnet itself for a chain this long.
+GPIO_SLOWDOWN = 8
 
 # Percent brightness; keep well under 100 given the 2x 5A supplies
 BRIGHTNESS = 70
