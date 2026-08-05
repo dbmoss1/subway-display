@@ -26,22 +26,19 @@ REQUEST_TIMEOUT_SECONDS = 10
 
 # --- LED matrix hardware (rpi-rgb-led-matrix RGBMatrixOptions) ---
 
-# TEMPORARY DIAGNOSTIC CHANGE, 2026-08-04: isolating a hardware fault.
-# Screens 1-3 (physically the top row, chain positions 4-6) are completely
-# blank and Screen 4 (position 3) shows corrupted noise, regardless of any
-# pixel-mapper software setting -- pointing at a bad connection somewhere
-# around position 3/4, not code. Testing here with screens 1-3 physically
-# unplugged and just a flat 3-panel chain (no fold) to see if 4/5/6 are
-# clean on their own. REVERT both this and DISPLAY_WIDTH/HEIGHT in
-# display.py back to the 6-panel/U-mapper setup afterward -- see git log
-# for the prior values.
+# 6x Adafruit 64x32 panels (product 5036), wired as a single serpentine
+# (U-shaped) chain off the Bonnet's one output, folded into a 192x64 display
+# by the "U-mapper" pixel mapper. The Bonnet only has one chain output, so
+# this is NOT 2 parallel chains. Confirmed physical order: bonnet ->
+# bottom-right -> bottom-middle -> bottom-left -> top-left -> top-middle ->
+# top-right.
 PANEL_ROWS = 32
 PANEL_COLS = 64
-CHAIN_LENGTH = 3
+CHAIN_LENGTH = 6
 PARALLEL_CHAINS = 1
 
-# No fold needed for a flat 3-panel chain.
-PIXEL_MAPPER = ""
+# Folds the single 6-panel chain into 2 physical rows of 3.
+PIXEL_MAPPER = "U-mapper"
 
 # Adafruit RGB Matrix Bonnet (product 3211). "adafruit-hat-pwm" needs a
 # soldered GPIO4-GPIO18 jumper mod that hasn't been done on this board --
@@ -54,8 +51,12 @@ HARDWARE_MAPPING = "adafruit-hat"
 # isn't a connection problem.
 LED_RGB_SEQUENCE = "RBG"
 
-# Raise if you see flicker/ghosting on the Pi Zero 2 W; 2-4 is typical
-GPIO_SLOWDOWN = 2
+# Raised from 2: the full 6-panel chain showed clean data near the bonnet
+# end degrading to corrupted/blank further down the chain, while each half
+# worked perfectly as a standalone 3-panel chain regardless of which cables
+# were used -- the signature of insufficient timing margin for a longer
+# chain on the Pi Zero 2 W, not a bad cable or panel.
+GPIO_SLOWDOWN = 4
 
 # Percent brightness; keep well under 100 given the 2x 5A supplies
 BRIGHTNESS = 70
