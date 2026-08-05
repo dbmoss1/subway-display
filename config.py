@@ -60,8 +60,13 @@ LED_RGB_SEQUENCE = "RBG"
 # the Bonnet itself for a chain this long.
 GPIO_SLOWDOWN = 8
 
-# Percent brightness; keep well under 100 given the 2x 5A supplies
-BRIGHTNESS = 70
+# Temporarily dropped from 70 to test whether the full 6-panel chain is
+# hitting a combined current limit: GPIO_SLOWDOWN 2/4/8 made zero visible
+# difference, which is unusual for a real timing fix but consistent with a
+# power/voltage problem that only shows up when all 6 panels draw current
+# at once (the isolated 3-panel tests never stressed the combined load).
+# Revert to 70 once this test is done.
+BRIGHTNESS = 30
 
 # BDF fonts bundled with https://github.com/hzeller/rpi-rgb-led-matrix
 # Adjust this path to wherever that repo is cloned on the Pi.
