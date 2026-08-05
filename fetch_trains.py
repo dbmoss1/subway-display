@@ -1,5 +1,6 @@
 """Fetch live Q train arrival predictions from the MTA GTFS-realtime feed."""
 
+import os
 import time
 from datetime import datetime
 
@@ -8,6 +9,19 @@ from google.transit import gtfs_realtime_pb2
 
 import config
 
+# On the Pi, Display() drops root privileges via RGBMatrix() once at
+# startup (see the comment in display.py), and every arrival fetch after
+# that -- i.e. all of them, since Display() is built before the refresh
+# loop starts -- runs as that lower-privilege user. It can't traverse the
+# home directory (mode 700) to reach the venv's bundled certifi CA file,
+# which fails with a misleading "invalid path" OSError even though the
+# file is right there. Use the system-wide CA bundle instead when present:
+# it's world-readable and unaffected by the privilege drop. Elsewhere
+# (e.g. local dev on Windows) it won't exist, so fall back to the normal
+# requests/certifi default.
+_SYSTEM_CA_BUNDLE = "/etc/ssl/certs/ca-certificates.crt"
+_VERIFY = _SYSTEM_CA_BUNDLE if os.path.exists(_SYSTEM_CA_BUNDLE) else True
+
 
 def fetch_arrivals(stop_id=config.STOP_ID, route_id=config.ROUTE_ID):
     """Return a sorted list of minutes-until-arrival for the given stop/route.
@@ -15,7 +29,9 @@ def fetch_arrivals(stop_id=config.STOP_ID, route_id=config.ROUTE_ID):
     Only future arrivals are included; anything already in the past (stale
     feed data) is dropped.
     """
-    response = requests.get(config.FEED_URL, timeout=config.REQUEST_TIMEOUT_SECONDS)
+    response = requests.get(
+        config.FEED_URL, timeout=config.REQUEST_TIMEOUT_SECONDS, verify=_VERIFY
+    )
     response.raise_for_status()
 
     feed = gtfs_realtime_pb2.FeedMessage()
