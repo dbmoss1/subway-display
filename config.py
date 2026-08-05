@@ -40,11 +40,13 @@ PARALLEL_CHAINS = 1
 
 # Folds the single 6-panel chain into 2 physical rows of 3. Confirmed actual
 # chain order: bonnet -> bottom-right -> bottom-middle -> bottom-left ->
-# top-left -> top-middle -> top-right. That's the chain visiting the bottom
-# row first, then the top row -- the opposite of what U-mapper assumes (top
-# row first) -- which works out to needing a 180-degree rotation, not just a
-# left-right mirror. See README Hardware section.
-PIXEL_MAPPER = "U-mapper;Rotate:180"
+# top-left -> top-middle -> top-right. Plain "U-mapper" (no Mirror/Rotate)
+# put the Q bullet on the correct (left) side of the working row; adding
+# Rotate:180 moved it to the wrong side without fixing the blank top row,
+# so that was a net loss -- reverted. The blank top row looks like a
+# separate hardware/connector issue (see README), not a pixel-mapper one:
+# no remapping should leave an entire row receiving zero data.
+PIXEL_MAPPER = "U-mapper"
 
 # Adafruit RGB Matrix Bonnet (product 3211). "adafruit-hat-pwm" needs a
 # soldered GPIO4-GPIO18 jumper mod that hasn't been done on this board --
