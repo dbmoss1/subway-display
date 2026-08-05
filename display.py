@@ -53,7 +53,13 @@ class Display:
             rows.append(None)
 
         self.canvas.Clear()
-        for row_index, minutes in enumerate(rows):
+        # Canvas row_index 0 is "top" in coordinate terms, but this chain's
+        # serpentine wiring visits the bottom physical row first (see the
+        # PIXEL_MAPPER comment in config.py), so U-mapper folds row_index 0
+        # onto the bottom panels (4/5/6) and row_index 1 onto the top panels
+        # (1/2/3) -- the reverse of what the coordinate math implies. Draw in
+        # reversed order so the soonest arrival lands on the top panels.
+        for row_index, minutes in enumerate(reversed(rows)):
             self._draw_row(row_index, minutes)
         self.canvas = self.matrix.SwapOnVSync(self.canvas)
 
