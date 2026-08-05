@@ -68,17 +68,46 @@ class Display:
 
         self._draw_bullet(config.BULLET_CENTER_X, center_y)
 
-        graphics.DrawText(
-            self.canvas, self.label_font, config.LABEL_X, text_baseline, WHITE,
+        self._draw_tracked_text(
+            self.label_font, config.LABEL_X, text_baseline, WHITE,
             config.DESTINATION_LABEL,
         )
 
         label = self._format_minutes(minutes)
-        label_width = self._text_width(self.label_font, label)
+        label_width = self._tracked_text_width(self.label_font, label)
         label_x = DISPLAY_WIDTH - config.RIGHT_MARGIN - label_width
-        graphics.DrawText(
-            self.canvas, self.label_font, label_x, text_baseline, WHITE, label
+        self._draw_tracked_text(
+            self.label_font, label_x, text_baseline, WHITE, label
         )
+
+    def _space_width(self, font):
+        # The BDF space glyph is wider than looks right at this scale --
+        # e.g. it left visible gaps around "&" in DESTINATION_LABEL and
+        # between the number and "MIN" in the arrival label, enough to
+        # crowd the display's fixed width. Scale it down instead of using
+        # the font's native advance. Tune SPACE_WIDTH_SCALE in config.py
+        # after checking it live on the physical display.
+        return round(font.CharacterWidth(ord(" ")) * config.SPACE_WIDTH_SCALE)
+
+    def _tracked_text_width(self, font, text):
+        """Like summing CharacterWidth, but with a narrowed space (see _space_width)."""
+        space_width = self._space_width(font)
+        return sum(
+            space_width if ch == " " else font.CharacterWidth(ord(ch))
+            for ch in text
+        )
+
+    def _draw_tracked_text(self, font, x, y, color, text):
+        """DrawText, but with a narrowed space (see _space_width) instead of
+        the font's native (too-wide, at this scale) space advance."""
+        space_width = self._space_width(font)
+        cursor_x = x
+        for ch in text:
+            if ch == " ":
+                cursor_x += space_width
+                continue
+            cursor_x += graphics.DrawText(self.canvas, font, cursor_x, y, color, ch)
+        return cursor_x
 
     def _draw_bullet(self, center_x, center_y):
         radius = config.BULLET_DIAMETER / 2
@@ -100,10 +129,6 @@ class Display:
         q_x = center_x - q_width // 2
         q_y = center_y + 2  # nudge down to account for BDF baseline offset
         graphics.DrawText(self.canvas, self.bullet_font, q_x, q_y, WHITE, "Q")
-
-    @staticmethod
-    def _text_width(font, text):
-        return sum(font.CharacterWidth(ord(ch)) for ch in text)
 
     @staticmethod
     def _format_minutes(minutes):

@@ -85,3 +85,11 @@ BULLET_DIAMETER = 15
 BULLET_CENTER_X = 9
 LABEL_X = 22
 RIGHT_MARGIN = 4
+
+# The label font's own space glyph is wider than looks right at this scale --
+# left too much gap around "&" in DESTINATION_LABEL and between the number
+# and "MIN" in the arrival label, enough to crowd the display's fixed width.
+# display.py scales the space advance down by this factor instead of using
+# the font's native width. 1.0 = font default (the old too-wide look);
+# lower = tighter. Nudge this after checking it live on the physical display.
+SPACE_WIDTH_SCALE = 0.5
